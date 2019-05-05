@@ -49,9 +49,6 @@ import           Control.Monad.Trans.Maybe (MaybeT(..))
 
 #include "hs_brotli.h"
 
-allocaPoke :: Storable x => x -> (Ptr x -> IO b) -> IO b
-allocaPoke v0 act = alloca $ \pv -> do { poke pv v0; act pv }
-
 packBS :: Ptr Word8 -> CSize -> IO ByteString
 packBS p sz
   | sz > 0    = BS.packCStringLen (castPtr p, fromIntegral sz)
@@ -228,9 +225,9 @@ runBrotliEncoder :: BrotliEncoder
 runBrotliEncoder (BrotliEncoder fp) ibs action0
   = unsafeIOToST $ withForeignPtr fp $ \encPtr -> do
       BS.unsafeUseAsCStringLen ibs $ \(ibsptr, ibslen) ->
-        allocaPoke (fromIntegral ibslen) $ \availIn ->
-          allocaPoke ibsptr $ \nextIn -> do
-            allocaPoke 0 $ \availOut -> do
+        with (fromIntegral ibslen) $ \availIn ->
+          with ibsptr $ \nextIn -> do
+            with 0 $ \availOut -> do
               rc <- fromHsBrotliState <$>
                     c_BrotliEncoderCompressStream encPtr action availIn (castPtr nextIn) availOut nullPtr nullPtr
               availIn' <- fromIntegral <$> peek availIn
@@ -247,9 +244,9 @@ runBrotliDecoder :: BrotliDecoder
 runBrotliDecoder (BrotliDecoder fp) ibs
   = unsafeIOToST $ withForeignPtr fp $ \encPtr -> do
       BS.unsafeUseAsCStringLen ibs $ \(ibsptr, ibslen) ->
-        allocaPoke (fromIntegral ibslen) $ \availIn ->
-          allocaPoke ibsptr $ \nextIn -> do
-            allocaPoke 0 $ \availOut -> do
+        with (fromIntegral ibslen) $ \availIn ->
+          with ibsptr $ \nextIn -> do
+            with 0 $ \availOut -> do
               rc <- fromHsBrotliState <$>
                     c_BrotliDecoderDecompressStream encPtr availIn (castPtr nextIn) availOut nullPtr nullPtr
               availIn' <- fromIntegral <$> peek availIn
@@ -261,7 +258,7 @@ runBrotliDecoder (BrotliDecoder fp) ibs
 readBrotliEncoder :: BrotliEncoder -> Int {- max-output -} -> ST s (BrotliState, ByteString)
 readBrotliEncoder (BrotliEncoder fp) maxobs
   = unsafeIOToST $ withForeignPtr fp $ \encPtr -> do
-      allocaPoke (fromIntegral maxobs) $ \availOutPtr -> do
+      with (fromIntegral maxobs) $ \availOutPtr -> do
         alloca $ \obsptrptr -> do
           rc <- fromHsBrotliState <$>
                 c_BrotliEncoderTakeOutput encPtr availOutPtr obsptrptr
@@ -273,7 +270,7 @@ readBrotliEncoder (BrotliEncoder fp) maxobs
 readBrotliDecoder :: BrotliDecoder -> Int {- max-output -} -> ST s (BrotliState, ByteString)
 readBrotliDecoder (BrotliDecoder fp) maxobs
   = unsafeIOToST $ withForeignPtr fp $ \encPtr -> do
-      allocaPoke (fromIntegral maxobs) $ \availOutPtr -> do
+      with (fromIntegral maxobs) $ \availOutPtr -> do
         alloca $ \obsptrptr -> do
           rc <- fromHsBrotliState <$>
                 c_BrotliDecoderTakeOutput encPtr availOutPtr obsptrptr
