@@ -51,7 +51,7 @@ HsBrotliEncoderCompressStream (BrotliEncoderState* state,
       }
   }
 
-  return HS_BS_INTERNAL_ERROR;  
+  return HS_BS_INTERNAL_ERROR;
 }
 
 static inline HsBrotliState
@@ -87,7 +87,7 @@ HsBrotliEncoderTakeOutput (BrotliEncoderState* state, size_t* sizep, uint8_t** b
   *buf_out = (uint8_t*) BrotliEncoderTakeOutput(state, sizep);
 
   const size_t size = *sizep;
-  
+
   if (!*buf_out && size != 0) {
     *sizep = 0;
     return HS_BS_INTERNAL_ERROR;
@@ -100,7 +100,7 @@ HsBrotliEncoderTakeOutput (BrotliEncoderState* state, size_t* sizep, uint8_t** b
     case BROTLI_TRUE: return HS_BS_FINISHED;
     case BROTLI_FALSE: return HS_BS_NEEDS_INPUT;
     }
-    return HS_BS_INTERNAL_ERROR;  
+    return HS_BS_INTERNAL_ERROR;
   }
 
   // non-empty
@@ -115,7 +115,7 @@ HsBrotliEncoderTakeOutput (BrotliEncoderState* state, size_t* sizep, uint8_t** b
 
   *sizep = 0;
   *buf_out = NULL;
-  return HS_BS_INTERNAL_ERROR;  
+  return HS_BS_INTERNAL_ERROR;
 }
 
 static inline HsBrotliState
@@ -124,7 +124,7 @@ HsBrotliDecoderTakeOutput (BrotliDecoderState* state, size_t* sizep, uint8_t** b
   *buf_out = (uint8_t*) BrotliDecoderTakeOutput(state, sizep);
 
   const size_t size = *sizep;
-  
+
   if (!*buf_out && size != 0) {
     *sizep = 0;
     return HS_BS_INTERNAL_ERROR;
@@ -137,7 +137,7 @@ HsBrotliDecoderTakeOutput (BrotliDecoderState* state, size_t* sizep, uint8_t** b
     case BROTLI_TRUE: return HS_BS_FINISHED;
     case BROTLI_FALSE: return HS_BS_NEEDS_INPUT;
     }
-    return HS_BS_INTERNAL_ERROR;  
+    return HS_BS_INTERNAL_ERROR;
   }
 
   // non-empty
@@ -152,7 +152,7 @@ HsBrotliDecoderTakeOutput (BrotliDecoderState* state, size_t* sizep, uint8_t** b
 
   *sizep = 0;
   *buf_out = NULL;
-  return HS_BS_INTERNAL_ERROR;  
+  return HS_BS_INTERNAL_ERROR;
 }
 
 static inline char*
