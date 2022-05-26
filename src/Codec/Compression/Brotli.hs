@@ -1,4 +1,5 @@
 {-# LANGUAGE BangPatterns       #-}
+{-# LANGUAGE CPP                #-}
 {-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE Trustworthy        #-}
 
@@ -86,7 +87,9 @@ import           Data.ByteString               (ByteString)
 import qualified Data.ByteString               as BS
 import qualified Data.ByteString.Lazy          as BSL
 import qualified Data.ByteString.Lazy.Internal as BSL
+#if !MIN_VERSION_base(4,8,0)
 import           Data.Monoid                   (Monoid (mempty))
+#endif
 import           Data.Typeable                 (Typeable)
 import           GHC.IO                        (noDuplicate)
 
@@ -267,7 +270,8 @@ compressST parms = strictToLazyST (newBrotliEncoder parms)
 
         goFlush :: ST s (CompressStream (ST s))
         goFlush  = do
-            (rc, 0) <- strictToLazyST (noDuplicateST >> runBrotliEncoder ls mempty BrotliEncOpFlush)
+            (rc, n) <- strictToLazyST (noDuplicateST >> runBrotliEncoder ls mempty BrotliEncOpFlush)
+            unless (n == 0) internalError
             case rc of
                 BSFail          -> encoderFailure
                 BSInternalError -> internalError
@@ -277,7 +281,8 @@ compressST parms = strictToLazyST (newBrotliEncoder parms)
 
         goFinish :: ST s (CompressStream (ST s))
         goFinish = do
-            (rc, 0) <- strictToLazyST (noDuplicateST >> runBrotliEncoder ls mempty BrotliEncOpFinish)
+            (rc, n) <- strictToLazyST (noDuplicateST >> runBrotliEncoder ls mempty BrotliEncOpFinish)
+            unless (n == 0) internalError
             case rc of
                 BSFail          -> encoderFailure
                 BSInternalError -> internalError
@@ -402,7 +407,8 @@ decompressST parms = strictToLazyST (newBrotliDecoder parms)
 
         goFinish :: ST s (DecompressStream (ST s))
         goFinish = do
-            (rc, ecode, 0) <- strictToLazyST (noDuplicateST >> runBrotliDecoder ls mempty)
+            (rc, ecode, n) <- strictToLazyST (noDuplicateST >> runBrotliDecoder ls mempty)
+            unless (n == 0) internalError
             case rc of
                 BSFail          -> pure (DecompressStreamError ecode)
                 BSInternalError -> internalError

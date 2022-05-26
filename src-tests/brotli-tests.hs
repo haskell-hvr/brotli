@@ -3,17 +3,17 @@
 module Main (main) where
 
 import           Control.Applicative
-import qualified Data.ByteString as BS
-import qualified Data.ByteString.Lazy as BL
-import           Data.ByteString.Lazy.Char8 ()
-import           Data.List
+import qualified Data.ByteString             as BS
+import qualified Data.ByteString.Lazy        as BL
+import           Data.ByteString.Lazy.Char8  ()
+import           Data.List                   (intersperse)
 import           Prelude
 
 import           Test.Tasty
-import           Test.Tasty.QuickCheck as QC
+import           Test.Tasty.QuickCheck       as QC
 import           Test.Tasty.HUnit
 
-import           Codec.Compression.Brotli as Brotli
+import           Codec.Compression.Brotli    as Brotli
 
 main :: IO ()
 main = defaultMain tests
