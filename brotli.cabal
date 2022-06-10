@@ -9,7 +9,7 @@ bug-reports:         https://github.com/haskell-hvr/brotli/issues
 license:             GPL-3
 license-file:        LICENSE
 author:              Herbert Valerio Riedel
-maintainer:          hvr@gnu.org
+maintainer:          https://github.com/haskell-hvr/brotli
 copyright:           (c) 2016, Herbert Valerio Riedel
 category:            Codec, Compression
 description:
@@ -47,6 +47,7 @@ tested-with:
 
 
 extra-source-files:
+  CHANGELOG.md
   cbits/hs_brotli.h
 
 source-repository head
