@@ -2,6 +2,7 @@ cabal-version:       1.12
 build-type:          Simple
 name:                brotli
 version:             0.0.0.1
+x-revision:          1
 
 synopsis:            Brotli (RFC7932) compression and decompression
 homepage:            https://github.com/haskell-hvr/brotli

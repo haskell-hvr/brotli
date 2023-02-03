@@ -1,4 +1,13 @@
 
+0.0.0.1 revision 1
+------------------
+
+_Andreas Abel, 2023-02-03_
+
+- Allow `base-4.18`.
+- Tested with GHC 7.4 - 9.6.1 alpha1.
+
+
 0.0.0.1
 -------
 
