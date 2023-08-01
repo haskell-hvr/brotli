@@ -1,4 +1,12 @@
 
+0.0.0.1 revision 3
+------------------
+
+_Andreas Abel, 2023-08-01_
+
+- Allow `base ≥ 4.19`.
+- Tested locally with GHC 9.8.1 alpha1.
+
 0.0.0.1 revision 2
 ------------------
 
