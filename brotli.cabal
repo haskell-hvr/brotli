@@ -2,7 +2,7 @@ cabal-version:       1.12
 build-type:          Simple
 name:                brotli
 version:             0.0.0.1
-x-revision:          3
+x-revision:          4
 
 synopsis:            Brotli (RFC7932) compression and decompression
 homepage:            https://github.com/haskell-hvr/brotli
@@ -87,7 +87,7 @@ test-suite brotli-tests
   -- additional dependencies that require version bounds
   build-depends:       HUnit                       == 1.6.*
                      , QuickCheck                  == 2.14.*
-                     , tasty                       >= 1.2     && < 1.5
+                     , tasty                       >= 1.2     && < 1.6
                      , tasty-hunit                 == 0.10.*
                      , tasty-quickcheck            == 0.10.*
 
