@@ -1,0 +1,86 @@
+name: Stack
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  check:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:      [ubuntu-latest]
+        ghc-ver: ['9.10', '9.8', '9.6', '9.4', '9.2', '9.0', '8.10', '8.8', '8.6', '8.4']
+        include:
+          - os: macos-latest
+            ghc-ver: '9.10'
+          - os: windows-latest
+            ghc-ver: '9.10'
+
+    env:
+      ARGS: "--stack-yaml=stack-${{ matrix.ghc-ver }}.yaml --no-terminal --system-ghc"
+        # --no-install-ghc also prevents the installation of MSYS2 on Windows
+        # https://github.com/commercialhaskell/stack/issues/6675
+
+    # Needed for Windows to make piping (... >> ...) and evaluation ( $(...) ) work.
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: haskell-actions/setup@v2
+      id: setup
+      with:
+        ghc-version: ${{ matrix.ghc-ver }}
+        enable-stack: true
+        cabal-update: false
+
+    - name: Install the brotli library (Windows)
+      if: runner.os == 'Windows'
+        # Andreas Abel, 2022-02-15 / 2025-01-07:
+        # Stack might be packing an old version of MSYS2.
+        # To work around certification problems, we update msys2-keyring.
+      run: |
+        stack exec ${{ env.ARGS }} -- pacman --noconfirm -Sy msys2-keyring
+        stack exec ${{ env.ARGS }} -- pacman --noconfirm -S mingw-w64-x86_64-pkgconf
+        stack exec ${{ env.ARGS }} -- pacman --noconfirm -S mingw-w64-x86_64-brotli
+
+    - name: Install the brotli library (Ubuntu)
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install libbrotli-dev -qq
+
+    - name: Cache dependencies (restore)
+      uses: actions/cache/restore@v4
+      id: cache
+      with:
+        path: ${{ steps.setup.outputs.stack-root }}
+        # Use a unique primary key (always save new cache); works if caches aren't to big or too many...
+        key:          ${{ runner.os }}-stack-${{ steps.setup.outputs.stack-version }}-ghc-${{ steps.setup.outputs.ghc-version }}-commit-${{ github.sha }}
+        restore-keys: ${{ runner.os }}-stack-${{ steps.setup.outputs.stack-version }}-ghc-${{ steps.setup.outputs.ghc-version }}-
+
+    - name: Install dependencies
+      run: |
+        stack build ${{ env.ARGS }} --test --only-dependencies
+
+    - name: Build hackage-cli
+      run: |
+        stack build ${{ env.ARGS }}
+
+    - name: Test hackage-cli
+      run: |
+        stack test ${{ env.ARGS }}
+
+    - name: Cache dependencies (save)
+      uses: actions/cache/save@v4
+      if: always() && steps.cache.outputs.cache-hit != 'true'
+      # # Will fail if we already have a cache with this key (in this case, cache-hit is true).
+      with:
+        path: ${{ steps.setup.outputs.stack-root }}
+        key:  ${{ steps.cache.outputs.cache-primary-key }}

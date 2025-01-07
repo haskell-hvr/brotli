@@ -86,8 +86,10 @@ test-suite brotli-tests
                      , bytestring
   -- additional dependencies that require version bounds
   build-depends:       HUnit                       == 1.6.*
-                     , QuickCheck                  >= 2.14    && < 2.16
-                     , tasty                       >= 1.2     && < 1.6
+                     , QuickCheck                  >= 2.11.3  && < 2.16
+                         -- LTS 12.26 has QuickCheck-2.11.3
+                     , tasty                       >= 1.1.0.4 && < 1.6
+                         -- LTS 12.26 has tasty-1.1.0.4
                      , tasty-hunit                 == 0.10.*
                      , tasty-quickcheck            >= 0.10    && < 1
 
