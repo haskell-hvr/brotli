@@ -1,9 +1,7 @@
-cabal-version:       1.12
+cabal-version:       1.18
 build-type:          Simple
 name:                brotli
-version:             0.0.0.2
--- Remove x-revision when bumping version
-x-revision:          1
+version:             0.0.0.3
 
 synopsis:            Brotli (RFC7932) compression and decompression
 homepage:            https://github.com/haskell-hvr/brotli
@@ -33,6 +31,7 @@ description:
     .
 
 tested-with:
+  GHC == 9.14.1
   GHC == 9.12.2
   GHC == 9.10.2
   GHC == 9.8.4
@@ -47,8 +46,10 @@ tested-with:
   GHC == 8.2.2
   GHC == 8.0.2
 
-extra-source-files:
+extra-doc-files:
   CHANGELOG.md
+
+extra-source-files:
   cbits/hs_brotli.h
   stack-9.12.yaml
   stack-9.10.yaml
@@ -98,10 +99,7 @@ test-suite brotli-tests
                      , base
                      , bytestring
   -- additional dependencies that require version bounds
-  build-depends:       HUnit                       == 1.6.*
-                     , QuickCheck                  >= 2.11.3  && < 3
-                         -- LTS 12.26 has QuickCheck-2.11.3
-                     , tasty                       >= 1.1.0.4 && < 1.6
+  build-depends:       tasty                       >= 1.1.0.4 && < 1.6
                          -- LTS 12.26 has tasty-1.1.0.4
                      , tasty-hunit                 == 0.10.*
                      , tasty-quickcheck            >= 0.10    && < 1

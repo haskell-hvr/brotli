@@ -1,4 +1,12 @@
 
+0.0.0.3
+-------
+
+_Andreas Abel, 2025-09-01_
+
+- Stop deriving `Typeable` (obsolete since GHC 7.10).
+- Tested with GHC 8.0 - 9.14 alpha1.
+
 0.0.0.2
 -------
 

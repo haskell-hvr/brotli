@@ -1,6 +1,5 @@
 {-# LANGUAGE BangPatterns       #-}
 {-# LANGUAGE CPP                #-}
-{-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE Trustworthy        #-}
 
 -- Copyright (C) 2016  Herbert Valerio Riedel
@@ -87,10 +86,6 @@ import           Data.ByteString               (ByteString)
 import qualified Data.ByteString               as BS
 import qualified Data.ByteString.Lazy          as BSL
 import qualified Data.ByteString.Lazy.Internal as BSL
-#if !MIN_VERSION_base(4,8,0)
-import           Data.Monoid                   (Monoid (mempty))
-#endif
-import           Data.Typeable                 (Typeable)
 import           GHC.IO                        (noDuplicate)
 
 import           LibBrotli
@@ -99,7 +94,7 @@ import           LibBrotli
 --
 -- Note that 'BrotliDecoderErrorCode' will be thrown instead of
 -- 'BrotliException' when possible.
-newtype BrotliException = BrotliException String deriving (Typeable,Show)
+newtype BrotliException = BrotliException String deriving (Show)
 
 instance Exception BrotliException
 

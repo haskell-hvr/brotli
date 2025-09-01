@@ -1,6 +1,5 @@
 {-# LANGUAGE BangPatterns       #-}
 {-# LANGUAGE CApiFFI            #-}
-{-# LANGUAGE DeriveDataTypeable #-}
 {-# LANGUAGE RecordWildCards    #-}
 
 -- Copyright (C) 2016  Herbert Valerio Riedel
@@ -38,7 +37,6 @@ import           Control.Exception
 import           Control.Monad.ST.Strict (ST)
 import           Control.Monad.ST.Unsafe (unsafeIOToST)
 import           Data.ByteString (ByteString)
-import           Data.Typeable (Typeable)
 import           Foreign
 import           Foreign.C
 import           System.IO.Unsafe as Unsafe (unsafePerformIO)
@@ -70,7 +68,7 @@ toBrotliBool True  =  #{const BROTLI_TRUE}
 ----------------------------------------------------------------------------
 
 -- | Errors signalled by the Brotli decoder. Use 'showBrotliDecoderErrorCode' to convert the numeric code into an error message.
-newtype BrotliDecoderErrorCode = BrotliDecoderErrorCode Int deriving (Eq,Show,Typeable)
+newtype BrotliDecoderErrorCode = BrotliDecoderErrorCode Int deriving (Eq, Show)
 
 instance Exception BrotliDecoderErrorCode
 
@@ -286,7 +284,7 @@ data CompressionMode
     = CompressionModeGeneric -- ^ Format-agnostic default mode
     | CompressionModeText    -- ^ UTF-8 formatted text data
     | CompressionModeFont    -- ^ Compression mode used in WOFF 2.0
-    deriving (Eq,Read,Show,Typeable)
+    deriving (Eq, Read, Show)
 
 -- | Compression quality setting
 data CompressionLevel
@@ -302,7 +300,7 @@ data CompressionLevel
     | CompressionLevel9
     | CompressionLevel10
     | CompressionLevel11 -- ^ slowest/highest compression level (default)
-    deriving (Eq,Ord,Read,Show,Enum,Typeable,Bounded)
+    deriving (Eq, Ord, Read, Show, Enum, Bounded)
 
 -- | Recommended sliding LZ77 window size.
 --
@@ -324,7 +322,7 @@ data CompressionWindowSize
     | CompressionWindowBits22 -- ^ 4194288 bytes (default)
     | CompressionWindowBits23 -- ^ 8388592 bytes
     | CompressionWindowBits24 -- ^ 16777200 bytes
-    deriving (Eq,Ord,Read,Show,Typeable,Bounded)
+    deriving (Eq, Ord, Read, Show, Bounded)
 
 -- | This 'Enum' instance is offset by 10.
 --
